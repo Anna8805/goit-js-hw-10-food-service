@@ -1,16 +1,21 @@
+import menuTemplate from './menu-template.hbs';
+import cardsMenu from './menu.json';
 import './styles.css';
 
 const STORAGE_KEY = 'current-theme';
 
-const body = document.querySelector('body');
-const themeSwitchRef = document.querySelector('#theme-switch-toggle');
+const Refs = {
+    body: document.querySelector('body'),
+    themeSwitchRef: document.querySelector('#theme-switch-toggle'),
+    menuRef: document.querySelector('ul.js-menu'),
+};
 
 const Theme = {
   LIGHT: 'light-theme',
   DARK: 'dark-theme',
 };
 
-themeSwitchRef.addEventListener('change', onSwitchChange);
+Refs.themeSwitchRef.addEventListener('change', onSwitchChange);
 
 function onSwitchChange(event) {
     event.preventDefault();
@@ -20,22 +25,30 @@ function onSwitchChange(event) {
     // }
 
     if (event.currentTarget.checked) {
-        body.classList.remove(Theme.LIGHT);
-        body.classList.add(Theme.DARK);
+        Refs.body.classList.remove(Theme.LIGHT);
+        Refs.body.classList.add(Theme.DARK);
 
         localStorage.setItem(STORAGE_KEY, Theme.DARK);
     } else {
-        body.classList.remove(Theme.DARK);
-        body.classList.add(Theme.LIGHT);
+        Refs.body.classList.remove(Theme.DARK);
+        Refs.body.classList.add(Theme.LIGHT);
 
         localStorage.setItem(STORAGE_KEY, Theme.LIGHT);
     }
 }
 
 const toggleMarker = localStorage.getItem(STORAGE_KEY);
-body.classList = toggleMarker || '';
+Refs.body.classList = toggleMarker || '';
 if (toggleMarker === Theme.DARK) {
-    themeSwitchRef.checked = true;
+    Refs.themeSwitchRef.checked = true;
 } else {
-    themeSwitchRef.checked = false;
+    Refs.themeSwitchRef.checked = false;
+}
+
+const cardsMarkup = createMenuTemplateMarkup(cardsMenu);
+
+Refs.menuRef.insertAdjacentHTML('beforeend', cardsMarkup);
+
+function createMenuTemplateMarkup(cardsMenu) {
+    return cardsMenu.map(menuTemplate).join('');
 }
